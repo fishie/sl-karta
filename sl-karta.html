@@ -1,0 +1,619 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Stockholm - Spårtrafik</title>
+    <style>
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        window.map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
+          center: {lat: 59.330206, lng: 18.061947},
+          mapTypeId: 'terrain'
+        });
+
+        drawRoslagsbanan();
+        drawLidingöbanan();
+        drawSaltsjöbanan();
+        drawTvärbanan();
+        drawPendeltåget();
+        drawNockebybanan();
+        drawSpårvägCity();
+
+        drawBlåaLinjen();
+        drawGrönaLinjen();
+        drawRödaLinjen();
+      }
+
+      function drawRoslagsbanan() {
+        let path_östra_station_kårsta = [
+          {lat: 59.3462545, lng: 18.0710319}, // Stockholms östra
+          {lat: 59.3649871, lng: 18.0509877}, // Universitetet
+          {lat: 59.3846655, lng: 18.0435339}, // Stocksund
+          {lat: 59.3918894, lng: 18.0469349}, // Mörby
+          {lat: 59.3983005, lng: 18.0591265}, // Djursholms ösby
+          {lat: 59.4052650, lng: 18.0603379}, // Bråvallavägen
+          {lat: 59.4129199, lng: 18.0574277}, // Djursholms Ekeby
+          {lat: 59.4259065, lng: 18.0513981}, // Enebyberg
+          {lat: 59.4356599, lng: 18.0582337}, // Roslags näsby
+          {lat: 59.4422726, lng: 18.0626681}, // Tibble
+          {lat: 59.4530631, lng: 18.0638945}, // Ensta
+          {lat: 59.4611515, lng: 18.0625910}, // Visinge
+          {lat: 59.4928524, lng: 18.0662119}, // Täby kyrkby
+          {lat: 59.5100915, lng: 18.0755246}, // Kragstalund
+          {lat: 59.5239646, lng: 18.0718446}, // Bällsta
+          {lat: 59.5338910, lng: 18.0798429}, // Vallentuna
+          {lat: 59.5460115, lng: 18.0795211}, // Ormsta
+          {lat: 59.5565620, lng: 18.0847406}, // Molnby
+          {lat: 59.5841582, lng: 18.1092721}, // Lindholmen
+          {lat: 59.6242394, lng: 18.1704319}, // Frösunda
+          {lat: 59.6390931, lng: 18.2269889}, // Ekskogen
+          {lat: 59.6567852, lng: 18.2674634}, // Kårsta
+        ];
+        let path_roslags_näsby_österskär = [
+          {lat: 59.4356599, lng: 18.0582337}, // Roslags Näsby
+          {lat: 59.4442372, lng: 18.0745295}, // Täby centrum
+          {lat: 59.4467345, lng: 18.0838233}, // Galoppfältet
+          {lat: 59.4491164, lng: 18.1043074}, // Viggbyholm
+          {lat: 59.4508574, lng: 18.1251642}, // Hägernäs
+          {lat: 59.4653408, lng: 18.1832448}, // Rydbo
+          {lat: 59.4724180, lng: 18.2334933}, // Täljö
+          {lat: 59.4808504, lng: 18.2685927}, // Åkers Runö
+          {lat: 59.4791423, lng: 18.2993603}, // Åkersberga
+          {lat: 59.4693272, lng: 18.3074082}, // Tunagård
+          {lat: 59.4608741, lng: 18.3117226}, // Österskär
+        ];
+        let path_djursholms_ösby_näsbypark = [
+          {lat: 59.3983005, lng: 18.0591265}, // Djursholms ösby
+          {lat: 59.3999228, lng: 18.0679795}, // Vendevägen
+          {lat: 59.4039558, lng: 18.0740815}, // Östberga
+          {lat: 59.4106828, lng: 18.0727297}, // Altorp
+          {lat: 59.4240537, lng: 18.0742532}, // Lahäll
+          {lat: 59.4273417, lng: 18.0854326}, // Näsby allé
+          {lat: 59.4302065, lng: 18.0955178}, // Näsbypark
+        ];
+
+        let line_östra_station_kårsta = new google.maps.Polyline({
+          path: path_östra_station_kårsta,
+          geodesic: true,
+          strokeColor: '#A05EA6',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_roslags_näsby_österskär = new google.maps.Polyline({
+          path: path_roslags_näsby_österskär,
+          geodesic: true,
+          strokeColor: '#A05EA6',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_djursholms_ösby_näsbypark = new google.maps.Polyline({
+          path: path_djursholms_ösby_näsbypark,
+          geodesic: true,
+          strokeColor: '#A05EA6',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line_östra_station_kårsta);
+        drawRail(line_roslags_näsby_österskär);
+        drawRail(line_djursholms_ösby_näsbypark);
+      }
+
+      function drawLidingöbanan() {
+        let path = [
+          {lat: 59.3572982, lng: 18.1022179}, // Ropsten
+          {lat: 59.3619083, lng: 18.1177975}, // Torsvik
+          {lat: 59.3568826, lng: 18.1337781}, // Baggeby
+          {lat: 59.3536561, lng: 18.1384465}, // Bodal
+          {lat: 59.3504826, lng: 18.1461404}, // Larsberg
+          {lat: 59.3466230, lng: 18.1550185}, // AGA
+          {lat: 59.3433463, lng: 18.1703688}, // Skärsätra
+          {lat: 59.3444329, lng: 18.1797284}, // Kottla
+          {lat: 59.3439378, lng: 18.1930898}, // Högberga
+          {lat: 59.3482975, lng: 18.2036121}, // Brevik
+          {lat: 59.3527305, lng: 18.2179418}, // Käppala
+          {lat: 59.3569249, lng: 18.2290381}, // Gåshaga
+          {lat: 59.3568662, lng: 18.2341343}, // Gåshaga brygga
+        ];
+
+        let line = new google.maps.Polyline({
+          path: path,
+          geodesic: true,
+          strokeColor: '#B56631',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line);
+      }
+
+      function drawSaltsjöbanan() {
+        let path_slussen_saltsjöbaden = [
+          {lat: 59.3194857, lng: 18.0721510}, // Slussen
+          {lat: 59.3123303, lng: 18.1079955}, // Henriksdal
+          {lat: 59.3068157, lng: 18.1213276}, // Sickla
+          {lat: 59.3066609, lng: 18.1301156}, // Nacka
+          {lat: 59.3068703, lng: 18.1496568}, // Saltsjö-Järla
+          {lat: 59.3052198, lng: 18.1612252}, // Lillängen
+          {lat: 59.3057579, lng: 18.1776094}, // Storängen
+          {lat: 59.3005417, lng: 18.1986862}, // Saltsjö-Duvnäs
+          {lat: 59.2951049, lng: 18.2356846}, // Östervik
+          {lat: 59.2941366, lng: 18.2557261}, // Fisksätra
+          {lat: 59.2898152, lng: 18.2760680}, // Igelboda
+          {lat: 59.2885933, lng: 18.2914504}, // Neglinge
+          {lat: 59.2831245, lng: 18.3022061}, // Ringvägen
+          {lat: 59.2790182, lng: 18.3130315}, // Saltsjöbaden
+        ];
+        let path_igelboda_solsidan = [
+          {lat: 59.2898152, lng: 18.2760680}, // Igelboda
+          {lat: 59.2839780, lng: 18.2772052}, // Tippen
+          {lat: 59.2789634, lng: 18.2821754}, // Tattby
+          {lat: 59.2729708, lng: 18.2851285}, // Erstaviksbadet
+          {lat: 59.2709226, lng: 18.2959445}, // Solsidan
+        ];
+
+        let line_slussen_saltsjöbaden = new google.maps.Polyline({
+          path: path_slussen_saltsjöbaden,
+          geodesic: true,
+          strokeColor: '#00AAAD',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_igelboda_solsidan = new google.maps.Polyline({
+          path: path_igelboda_solsidan,
+          geodesic: true,
+          strokeColor: '#00AAAD',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line_slussen_saltsjöbaden);
+        drawRail(line_igelboda_solsidan);
+      }
+
+      function drawTvärbanan() {
+        let path = [
+          {lat: 59.3651057, lng: 18.0101839}, // Solna station
+          {lat: 59.3614543, lng: 17.9964421}, // Solna centrum
+          {lat: 59.3597598, lng: 17.9789127}, // Solna Business Park
+          {lat: 59.3609877, lng: 17.9701355}, // Sundbybergs centrum
+          {lat: 59.3606425, lng: 17.9626391}, // Bällsta bro
+          {lat: 59.3561689, lng: 17.9613329}, // Karlsbodavägen
+          {lat: 59.3497029, lng: 17.9626451}, // Norra Ulvsunda
+          {lat: 59.3425510, lng: 17.9699857}, // Johannesfred
+          {lat: 59.3333745, lng: 17.9820583}, // Alvik
+          {lat: 59.3289790, lng: 17.9821562}, // Alviks strand
+          {lat: 59.3248214, lng: 17.9927878}, // Stora Essingen
+          {lat: 59.3159805, lng: 18.0113313}, // Gröndal
+          {lat: 59.3141347, lng: 18.0181548}, // Trekanten
+          {lat: 59.3103176, lng: 18.0220091}, // Liljeholmen
+          {lat: 59.3058319, lng: 18.0257227}, // Årstadal
+          {lat: 59.2993695, lng: 18.0296454}, // Årstaberg
+          {lat: 59.2964409, lng: 18.0393925}, // Årstafältet
+          {lat: 59.2949474, lng: 18.0486207}, // Valla torg
+          {lat: 59.2934039, lng: 18.0640715}, // Linde
+          {lat: 59.2944441, lng: 18.0781263}, // Globen
+          {lat: 59.2990354, lng: 18.0809923}, // Gullmarsplan
+          {lat: 59.3027799, lng: 18.0881900}, // Mårtensdal
+          {lat: 59.3042381, lng: 18.0959255}, // Luma
+          {lat: 59.3027669, lng: 18.1036167}, // Sickla kaj
+          {lat: 59.3062090, lng: 18.1084862}, // Sickla udde
+          {lat: 59.3068156, lng: 18.1213273}, // Sickla
+        ];
+
+        let line = new google.maps.Polyline({
+          path: path,
+          geodesic: true,
+          strokeColor: '#E08220',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line);
+      }
+
+      function drawPendeltåget() {
+        let path_bålsta_gnesta = [
+          {lat: 59.5692476, lng: 17.5310147},
+          {lat: 59.5114224, lng: 17.6359105},
+          {lat: 59.4778823, lng: 17.7524994},
+          {lat: 59.4531463, lng: 17.8057802},
+          {lat: 59.4235352, lng: 17.8330475},
+          {lat: 59.4035804, lng: 17.8693137},
+          {lat: 59.3832927, lng: 17.8989145},
+          {lat: 59.3609563, lng: 17.9712483},
+          {lat: 59.3429586, lng: 18.0497968},
+          {lat: 59.3301686, lng: 18.0581975},
+          {lat: 59.3140413, lng: 18.0642620},
+          {lat: 59.2993709, lng: 18.0296481},
+          {lat: 59.2785687, lng: 18.0110711},
+          {lat: 59.2538875, lng: 17.9965577},
+          {lat: 59.2363417, lng: 17.9788792},
+          {lat: 59.2179582, lng: 17.9456815},
+          {lat: 59.2053533, lng: 17.9038712},
+          {lat: 59.1996335, lng: 17.8352389},
+          {lat: 59.1936077, lng: 17.7494296},
+          {lat: 59.1844751, lng: 17.6597299},
+          {lat: 59.1792919, lng: 17.6468982},
+          {lat: 59.1628383, lng: 17.6468445},
+          {lat: 59.0933691, lng: 17.5672460},
+          {lat: 59.0475399, lng: 17.4181715},
+          {lat: 59.0487132, lng: 17.3116650},
+        ];
+        let path_södertälje_centrum_södertälje_hamn = [
+          {lat: 59.1924662, lng: 17.6265818},
+          {lat: 59.1792912, lng: 17.6468995},
+        ];
+        let path_märsta_odenplan = [
+          {lat: 59.6281263, lng: 17.8610229},
+          {lat: 59.5833761, lng: 17.8798681},
+          {lat: 59.5216954, lng: 17.9002690},
+          {lat: 59.4762299, lng: 17.9144016},
+          {lat: 59.4585892, lng: 17.9244518},
+          {lat: 59.4440402, lng: 17.9326218},
+          {lat: 59.4284931, lng: 17.9483664},
+          {lat: 59.4091861, lng: 17.9622106},
+          {lat: 59.3806767, lng: 18.0005300},
+          {lat: 59.3651060, lng: 18.0101833},
+          {lat: 59.3429586, lng: 18.0497968},
+        ];
+        let path_älvsjö_nynäshamn = [
+          {lat: 59.2785687, lng: 18.0110711},
+          {lat: 59.2367204, lng: 18.1035054},
+          {lat: 59.2277084, lng: 18.1306922},
+          {lat: 59.2184030, lng: 18.1542742},
+          {lat: 59.1853744, lng: 18.1355041},
+          {lat: 59.1675147, lng: 18.1347343},
+          {lat: 59.1433745, lng: 18.1270579},
+          {lat: 59.1231583, lng: 18.1032640},
+          {lat: 59.1096165, lng: 18.0675021},
+          {lat: 59.1024207, lng: 18.0448589},
+          {lat: 59.0688774, lng: 17.9764035},
+          {lat: 59.0290865, lng: 17.9265144},
+          {lat: 58.9846945, lng: 17.9025623},
+          {lat: 58.9133690, lng: 17.9425085},
+          {lat: 58.8989241, lng: 17.9318976},
+          {lat: 58.9011353, lng: 17.9513329},
+        ];
+
+        let line_bålsta_gnesta = new google.maps.Polyline({
+          path: path_bålsta_gnesta,
+          geodesic: true,
+          strokeColor: '#F166A7',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_södertälje_centrum_södertälje_hamn = new google.maps.Polyline({
+          path: path_södertälje_centrum_södertälje_hamn,
+          geodesic: true,
+          strokeColor: '#F166A7',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_märsta_odenplan = new google.maps.Polyline({
+          path: path_märsta_odenplan,
+          geodesic: true,
+          strokeColor: '#F166A7',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_älvsjö_nynäshamn = new google.maps.Polyline({
+          path: path_älvsjö_nynäshamn,
+          geodesic: true,
+          strokeColor: '#F166A7',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line_bålsta_gnesta);
+        drawRail(line_södertälje_centrum_södertälje_hamn);
+        drawRail(line_märsta_odenplan);
+        drawRail(line_älvsjö_nynäshamn);
+      }
+
+      function drawNockebybanan() {
+        let path = [
+          {lat: 59.3333748, lng: 17.9820576}, // Alvik
+          {lat: 59.3289393, lng: 17.9730266}, // Alléparken
+          {lat: 59.3245341, lng: 17.9740781}, // Klövervägen
+          {lat: 59.3208714, lng: 17.9646581}, // Smedslätten
+          {lat: 59.3234215, lng: 17.9569039}, // Älstensgatan
+          {lat: 59.3207626, lng: 17.9521953}, // Älstens gård
+          {lat: 59.3235310, lng: 17.9395205}, // Höglandstorget
+          {lat: 59.3279077, lng: 17.9348709}, // Olovslund
+          {lat: 59.3290317, lng: 17.9276825}, // Nockeby torg
+          {lat: 59.3288073, lng: 17.9185094}, // Nockeby
+        ];
+        let line = new google.maps.Polyline({
+          path: path,
+          geodesic: true,
+          strokeColor: '#778DA7',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line);
+      }
+
+      function drawSpårvägCity() {
+        let path = [
+          {lat: 59.3321271, lng: 18.0621350}, // T-Centralen
+          {lat: 59.3327349, lng: 18.0710433}, // Kungsträdgården
+          {lat: 59.3326083, lng: 18.0768918}, // Nybroplan
+          {lat: 59.3314503, lng: 18.0851718}, // Styrmansgatan
+          {lat: 59.3317122, lng: 18.0926485}, // Djurgårdsbron
+          {lat: 59.3293494, lng: 18.0955010}, // Nordiska museet/Vasamuseet
+          {lat: 59.3252295, lng: 18.0972578}, // Liljevaldhs/Gröna Lund
+          {lat: 59.3240161, lng: 18.1016352}, // Skansen
+          {lat: 59.3232454, lng: 18.1053179}, // Djurgårdsskolan
+          {lat: 59.3226121, lng: 18.1114501}, // Waldemarsudde
+          {lat: 59.3240189, lng: 18.1105824}, // Bellmansro
+          {lat: 59.3232454, lng: 18.1053179}, // Djurgårdsskolan
+        ];
+
+        let line = new google.maps.Polyline({
+          path: path,
+          geodesic: true,
+          strokeColor: '#8D9087',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line);
+      }
+
+      function drawBlåaLinjen() {
+        let path_kungsträdgården_hjulsta = [
+          {lat: 59.3307741, lng: 18.0732393}, // Kungsträdgården
+          {lat: 59.3307775, lng: 18.0591108}, // T-Centralen
+          {lat: 59.3298314, lng: 18.0440918}, // Rådhuset
+          {lat: 59.3322290, lng: 18.0292323}, // Fridhemsplan
+          {lat: 59.3382878, lng: 18.0138257}, // Stadshagen
+          {lat: 59.3475899, lng: 18.0039833}, // Västra skogen
+          {lat: 59.3495754, lng: 17.9855458}, // Huvudsta
+          {lat: 59.3547157, lng: 17.9733217}, // Solna strand
+          {lat: 59.3612583, lng: 17.9721589}, // Sundbybergs centrum
+          {lat: 59.3678005, lng: 17.9650350}, // Duvbo
+          {lat: 59.3757145, lng: 17.9403627}, // Rissne
+          {lat: 59.3884054, lng: 17.9286924}, // Rinkeby
+          {lat: 59.3949429, lng: 17.8989977}, // Tensta
+          {lat: 59.3961699, lng: 17.8877123}, // Hjulsta
+        ];
+        let path_västra_skogen_akalla = [
+          {lat: 59.3475905, lng: 18.0039847}, // Västra skogen
+          {lat: 59.3587172, lng: 17.9988295}, // Solna centrum
+          {lat: 59.3664399, lng: 17.9831868}, // Näckrosen
+          {lat: 59.3753552, lng: 17.9691213}, // Hallonbergen
+          {lat: 59.4031845, lng: 17.9424360}, // Kista
+          {lat: 59.4101160, lng: 17.9255723}, // Husby
+          {lat: 59.4155239, lng: 17.9131275}, // Akalla
+        ];
+
+        let line_kungsträdgården_hjulsta = new google.maps.Polyline({
+          path: path_kungsträdgården_hjulsta,
+          geodesic: true,
+          strokeColor: '#088ED0',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_västra_skogen_akalla = new google.maps.Polyline({
+          path: path_västra_skogen_akalla,
+          geodesic: true,
+          strokeColor: '#088ED0',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line_kungsträdgården_hjulsta);
+        drawRail(line_västra_skogen_akalla);
+      }
+
+      function drawGrönaLinjen() {
+        let path_hässelby_strand_gullmarsplan = [
+          {lat: 59.3616315, lng: 17.8325674}, // Hässelby strand
+          {lat: 59.3670563, lng: 17.8443208}, // Hässelby gård
+          {lat: 59.3679091, lng: 17.8577909}, // Johannelund
+          {lat: 59.3632495, lng: 17.8720633}, // Vällingby
+          {lat: 59.3549146, lng: 17.8818651}, // Råcksta
+          {lat: 59.3479974, lng: 17.8835736}, // Blackeberg
+          {lat: 59.3460350, lng: 17.8930834}, // Islandstorget
+          {lat: 59.3419144, lng: 17.9073876}, // Ängbyplan
+          {lat: 59.3420689, lng: 17.9242949}, // Åkeshov
+          {lat: 59.3382556, lng: 17.9400703}, // Brommaplan
+          {lat: 59.3364322, lng: 17.9540473}, // Abrahamsberg
+          {lat: 59.3345670, lng: 17.9660864}, // Stora mossen
+          {lat: 59.3333748, lng: 17.9820576}, // Alvik
+          {lat: 59.3328344, lng: 18.0029547}, // Kristineberg
+          {lat: 59.3314732, lng: 18.0148825}, // Thorildsplan
+          {lat: 59.3322297, lng: 18.0292323}, // Fridhemsplan
+          {lat: 59.3396542, lng: 18.0369879}, // S:t Eriksplan
+          {lat: 59.3430574, lng: 18.0494910}, // Odenplan
+          {lat: 59.3403265, lng: 18.0592134}, // Rådmansgatan
+          {lat: 59.3352336, lng: 18.0624515}, // Hötorget
+          {lat: 59.3322633, lng: 18.0631828}, // T-Centralen
+          {lat: 59.3230781, lng: 18.0673774}, // Gamla stan
+          {lat: 59.3194857, lng: 18.0721503}, // Slussen
+          {lat: 59.3143373, lng: 18.0735505}, // Medborgarplatsen
+          {lat: 59.3078657, lng: 18.0758505}, // Skanstull
+          {lat: 59.2990354, lng: 18.0809923}, // Gullmarsplan
+        ];
+        let path_gullmarsplan_hagsätra = [
+          {lat: 59.2990354, lng: 18.0809923}, // Gullmarsplan
+          {lat: 59.2944441, lng: 18.0781263}, // Globen
+          {lat: 59.2888207, lng: 18.0706403}, // Enskede gård
+          {lat: 59.2831608, lng: 18.0704391}, // Sockenplan
+          {lat: 59.2776904, lng: 18.0669831}, // Svedmyra
+          {lat: 59.2746325, lng: 18.0556333}, // Stureby
+          {lat: 59.2705381, lng: 18.0496895}, // Bandhagen
+          {lat: 59.2634845, lng: 18.0426876}, // Högdalen
+          {lat: 59.2567611, lng: 18.0286101}, // Rågsved
+          {lat: 59.2628025, lng: 18.0125315}, // Hagsätra
+        ];
+        let path_gullmarsplan_farsa_strand = [
+          {lat: 59.2990354, lng: 18.0809923}, // Gullmarsplan
+          {lat: 59.2954083, lng: 18.0904001}, // Skärmabrink
+          {lat: 59.2901625, lng: 18.0911149}, // Blåsut
+          {lat: 59.2849274, lng: 18.0923286}, // Sandsborg
+          {lat: 59.2785900, lng: 18.0954024}, // Skogskyrkogården
+          {lat: 59.2714352, lng: 18.0858779}, // Tallkrogen
+          {lat: 59.2640225, lng: 18.0820356}, // Gubbängen
+          {lat: 59.2569908, lng: 18.0831380}, // Hökarängen
+          {lat: 59.2435025, lng: 18.0937837}, // Farsta
+          {lat: 59.2350075, lng: 18.1017365}, // Farsta strand
+        ];
+        let path_gullmarsplan_skarpnäck = [
+          {lat: 59.2954083, lng: 18.0904001}, // Skärmabrink
+          {lat: 59.2948023, lng: 18.1038111}, // Hammarbyhöjden
+          {lat: 59.2911535, lng: 18.1154734}, // Björkhagen
+          {lat: 59.2845671, lng: 18.1144434}, // Kärrtorp
+          {lat: 59.2762639, lng: 18.1314647}, // Bagarmossen
+          {lat: 59.2664344, lng: 18.1330580}, // Skarpnäck
+        ];
+
+        let line_hässelby_strand_gullmarsplan = new google.maps.Polyline({
+          path: path_hässelby_strand_gullmarsplan,
+          geodesic: true,
+          strokeColor: '#21A74A',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_gullmarsplan_hagsätra = new google.maps.Polyline({
+          path: path_gullmarsplan_hagsätra,
+          geodesic: true,
+          strokeColor: '#21A74A',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_gullmarsplan_farsa_strand = new google.maps.Polyline({
+          path: path_gullmarsplan_farsa_strand,
+          geodesic: true,
+          strokeColor: '#21A74A',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_gullmarsplan_skarpnäck = new google.maps.Polyline({
+          path: path_gullmarsplan_skarpnäck,
+          geodesic: true,
+          strokeColor: '#21A74A',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line_hässelby_strand_gullmarsplan);
+        drawRail(line_gullmarsplan_hagsätra);
+        drawRail(line_gullmarsplan_farsa_strand);
+        drawRail(line_gullmarsplan_skarpnäck);
+      }
+
+      function drawRödaLinjen() {
+        let path_mörby_centrum_fruängen = [
+          {lat: 59.3984359, lng: 18.0362356}, // Mörby centrum
+          {lat: 59.3919044, lng: 18.0413720}, // Danderyds sjukhus
+          {lat: 59.3817013, lng: 18.0367237}, // Bergshamra
+          {lat: 59.3652071, lng: 18.0544209}, // Universitetet
+          {lat: 59.3459085, lng: 18.0716005}, // Tekniska högskolan
+          {lat: 59.3428642, lng: 18.0819619}, // Stadion
+          {lat: 59.3347284, lng: 18.0738187}, // Östermalmstorg
+          {lat: 59.3322633, lng: 18.0634828}, // T-Centralen
+          {lat: 59.3230781, lng: 18.0676787}, // Gamla stan
+          {lat: 59.3194857, lng: 18.0724503}, // Slussen
+          {lat: 59.3170864, lng: 18.0607402}, // Mariatorget
+          {lat: 59.3177776, lng: 18.0501509},
+          {lat: 59.3157382, lng: 18.0343580},
+          {lat: 59.3103176, lng: 18.0220091},
+          {lat: 59.3018522, lng: 18.0120367},
+          {lat: 59.2982165, lng: 17.9970029},
+          {lat: 59.2955720, lng: 17.9791528},
+          {lat: 59.2912124, lng: 17.9664740},
+          {lat: 59.2859289, lng: 17.9650068},
+        ];
+        let path_ropsten_östermalmstorg = [
+          {lat: 59.3572982, lng: 18.1022179},
+          {lat: 59.3479092, lng: 18.1021911},
+          {lat: 59.3384970, lng: 18.0902848},
+          {lat: 59.3347284, lng: 18.0738187},
+        ];
+        let path_liljeholmen_norsborg = [
+          {lat: 59.3103176, lng: 18.0220091},
+          {lat: 59.3062638, lng: 18.0014795},
+          {lat: 59.3055327, lng: 17.9892004},
+          {lat: 59.3042949, lng: 17.9738849},
+          {lat: 59.3009361, lng: 17.9568073},
+          {lat: 59.2948379, lng: 17.9338127},
+          {lat: 59.2849836, lng: 17.9213700},
+          {lat: 59.2771436, lng: 17.9070041},
+          {lat: 59.2759158, lng: 17.8904039},
+          {lat: 59.2650239, lng: 17.8838485},
+          {lat: 59.2498774, lng: 17.8792056},
+          {lat: 59.2475953, lng: 17.8611732},
+          {lat: 59.2394957, lng: 17.8453293},
+          {lat: 59.2432995, lng: 17.8251618},
+          {lat: 59.2438976, lng: 17.8126681},
+        ];
+
+        let line_mörby_centrum_fruängen = new google.maps.Polyline({
+          path: path_mörby_centrum_fruängen,
+          geodesic: true,
+          strokeColor: '#DC0C15',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_ropsten_östermalmstorg = new google.maps.Polyline({
+          path: path_ropsten_östermalmstorg,
+          geodesic: true,
+          strokeColor: '#DC0C15',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        let line_liljeholmen_norsborg = new google.maps.Polyline({
+          path: path_liljeholmen_norsborg,
+          geodesic: true,
+          strokeColor: '#DC0C15',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        drawRail(line_mörby_centrum_fruängen);
+        drawRail(line_ropsten_östermalmstorg);
+        drawRail(line_liljeholmen_norsborg);
+      }
+
+      function drawRail(rail) {
+        window.rails.push(rail);
+        rail.setMap(window.map);
+      }
+
+      function clearRails() {
+        window.rails.forEach((rail) => {
+            rail.setMap(null);
+        });
+        window.rails = [];
+      }
+
+      window.rails = [];
+    </script>
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    >
+    </script>
+  </body>
+</html>
